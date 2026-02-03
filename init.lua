@@ -287,28 +287,28 @@ require("lazy").setup({
           end, { desc = "Run build script in floating terminal" })
       end,
     },
-    {
-        "nvimtools/none-ls.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        config = function()
-            local null_ls = require("null-ls")
-            local venv_bin = vim.fn.expand("~/.config/nvim/.venv/bin")
-            null_ls.setup({
-                sources = {
-                    null_ls.builtins.formatting.clang_format,
-                    null_ls.builtins.formatting.black.with({
-                        command = venv_bin .. "/black",
-                    }),
-                    null_ls.builtins.formatting.isort.with({
-                        command = venv_bin .. "/isort",
-                    }),
-                    --                  null_ls.builtins.diagnostics.flake8.with({
-                    --                      command = venv_bin .. "/flake8",
-                    --                  }),
-                },
-            })
-        end,
-    },
+    -- {
+    --     "nvimtools/none-ls.nvim",
+    --     dependencies = { "nvim-lua/plenary.nvim" },
+    --     config = function()
+    --         local null_ls = require("null-ls")
+    --         local venv_bin = vim.fn.expand("~/.config/nvim/.venv/bin")
+    --         null_ls.setup({
+    --             sources = {
+    --                 null_ls.builtins.formatting.clang_format,
+    --                 null_ls.builtins.formatting.black.with({
+    --                     command = venv_bin .. "/black",
+    --                 }),
+    --                 null_ls.builtins.formatting.isort.with({
+    --                     command = venv_bin .. "/isort",
+    --                 }),
+    --                 --                  null_ls.builtins.diagnostics.flake8.with({
+    --                 --                      command = venv_bin .. "/flake8",
+    --                 --                  }),
+    --             },
+    --         })
+    --     end,
+    -- },
 
     {
 	"folke/tokyonight.nvim",
@@ -352,7 +352,31 @@ require("lazy").setup({
             -- Refer to the configuration section below
             -- or leave empty for defaults
         },
+    },
+
+    {
+        "linux-cultist/venv-selector.nvim",
+        dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim" },
+        opts = {
+            auto_refresh = true,
+            fd_binary_name = "fdfind",
+            notify_user_on_venv_activation = true,
+            on_venv_activate_callback = function(venv_path, venv_python)
+                -- venv_path: path to the virtual environment root
+                -- venv_python: path to the Python executable
+                print("Switched to: " .. venv_path)
+
+                -- Example: Update statusline
+                vim.g.current_venv = vim.fn.fnamemodify(venv_path, ":t")
+            end,
+            debug = true,
+        },
+        keys = {
+            { "<leader>vs", "<cmd>VenvSelect<cr>", desc = "Select VirtualEnv" },
+            { "<leader>vc", "<cmd>VenvSelectCached<cr>", desc = "Select Cached Venv" },
+        },
     }
+
 
 
   -- Sessions
@@ -448,6 +472,47 @@ vim.lsp.enable('clangd')
 -- ================
 -- LSP (Python)
 -- ================
+-- require("venv-selector").setup({
+--     auto_refresh = true,  -- automatically detect venv on buffer enter
+--     changed_venv_hooks = {
+--         -- This function is called whenever a venv is activated
+--         function(venv)
+--             if venv then
+--                 vim.env.VIRTUAL_ENV = venv
+--             end
+--
+--             -- Restart Pyright to pick up new Python environment
+--             for _, client in ipairs(vim.lsp.get_active_clients({ name = "pyright" })) do
+--                 client:stop()
+--             end
+--
+--             vim.defer_fn(function()
+--                 lsp.start({
+--                     name = "pyright",
+--                     cmd = pyright_cmd,
+--                     root_dir = vim.fs.dirname(vim.fs.find({ "pyproject.toml", ".git" }, { upward = true })[1] or vim.loop.cwd()),
+--                     on_init = function(client)
+--                         client.config.settings.python.pythonPath = python_path
+--                     end,
+--                     settings = {
+--                         python = {
+--                             pythonpath = vim.env.VIRTUAL_ENV and vim.env.VIRTUAL_ENV .. "/bin/python" or vim.g.python3_host_prog,
+--                             analysis = {
+--                                 autoSearchPaths = true,
+--                                 useLibraryCodeForTypes = true,
+--                                 diagnosticMode = "openFilesOnly",
+--                             },
+--                         },
+--                     }})
+--                 end, 100)  -- small delay to allow previous client to fully stop
+--
+--             require("lspconfig").pyright.setup{}  -- start Pyright
+--         end,
+--         function(venv)
+--             print("Changed venv to: " .. venv)
+--         end,
+--     },
+-- })
 local venv_path = vim.fn.expand("~/.config/nvim/.venv")
 local pyright_cmd = { venv_path .. "/bin/pyright-langserver", "--stdio" }
 local python_path = venv_path .. "/bin/python"
@@ -457,10 +522,18 @@ vim.lsp.config('pyright', {
     on_init = function(client)
         client.config.settings.python.pythonPath = python_path
     end,
-    on_new_config = python_integration.on_new_config,
+    on_new_config = function(new_config, _)
+        local venv = os.getenv("VIRTUAL_ENV") or current_venv
+        if vim.loop.fs_stat(venv .. "/bin/python") then
+            new_config.settings.python.pythonPath = venv .. "/bin/python"
+        else
+            new_config.settings.python.pythonPath = "python" -- fallback
+        end
+    end,
     settings = {
         python = {
-            pythonpath = python_path,
+            --pythonpath = vim.env.VIRTUAL_ENV and vim.env.VIRTUAL_ENV .. "/bin/python" or vim.g.python3_host_prog,
+            pythonPath = require("venv-selector").python() or vim.g.python3_host_prog,
             analysis = {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
@@ -470,6 +543,22 @@ vim.lsp.config('pyright', {
     },
 })
 vim.lsp.enable('pyright')
+
+require("venv-selector").setup({
+    auto_refresh = true,
+    fd_binary_name = "fdfind",
+    notify_user_on_venv_activation = true,
+    on_venv_activate_callback = function(venv_path, venv_python)
+        -- venv_path: path to the virtual environment root
+        -- venv_python: path to the Python executable
+        print("Switched to: " .. venv_path)
+
+        -- Example: Update statusline
+        vim.g.current_venv = vim.fn.fnamemodify(venv_path, ":t")
+    end,
+    debug = true,
+})
+
 
 -- ================
 -- Completion setup
