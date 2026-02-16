@@ -496,7 +496,15 @@ require("lazy").setup({
             vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
             vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
         end,
+    },
+    {
+        "echasnovski/mini.bufremove",
+        version = false, -- always latest
+        config = function()
+            require("mini.bufremove").setup()
+        end,
     }
+
 
 
 
@@ -571,6 +579,22 @@ require('remote-sshfs').setup{
     },
   },
 }
+
+local actions = require("telescope.actions")
+
+require("telescope").setup({
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-d>"] = actions.delete_buffer,
+      },
+      n = {
+        ["dd"] = actions.delete_buffer,
+      },
+    },
+  },
+})
+
 
 -- ================
 -- LSP (clangd)
@@ -861,6 +885,15 @@ end, { desc = "Find files" })
 vim.keymap.set("n", "<leader>sb", function()
   require("telescope.builtin").buffers({ prompt_title = "Search Buffers" })
 end, { desc = "Find buffers" })
+
+vim.keymap.set("n", "<leader>bd", function()
+  require("mini.bufremove").delete()
+end, { desc = "Delete buffer" })
+
+vim.keymap.set("n", "<leader>bD", function()
+  require("mini.bufremove").wipeout()
+end, { desc = "Wipeout buffer" })
+
 
 
 
