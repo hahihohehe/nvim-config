@@ -376,91 +376,126 @@ require("lazy").setup({
             { "<leader>vc", "<cmd>VenvSelectCached<cr>", desc = "Select Cached Venv" },
         },
     },
+    -- {
+    --     "yetone/avante.nvim",
+    --     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    --     -- ⚠️ must add this setting! ! !
+    --     build = vim.fn.has("win32") ~= 0
+    --     and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+    --     or "make",
+    --     event = "VeryLazy",
+    --     version = false, -- Never set this value to "*"! Never!
+    --     ---@module 'avante'
+    --     ---@type avante.Config
+    --     opts = {
+    --         -- add any opts here
+    --         -- this file can contain specific instructions for your project
+    --         instructions_file = "avante.md",
+    --         -- for example
+    --         provider = "gemini",
+    --         providers = {
+    --             claude = {
+    --                 endpoint = "https://api.anthropic.com",
+    --                 model = "claude-sonnet-4-20250514",
+    --                 timeout = 30000, -- Timeout in milliseconds
+    --                 extra_request_body = {
+    --                     temperature = 0.75,
+    --                     max_tokens = 20480,
+    --                 },
+    --             },
+    --             moonshot = {
+    --                 endpoint = "https://api.moonshot.ai/v1",
+    --                 model = "kimi-k2-0711-preview",
+    --                 timeout = 30000, -- Timeout in milliseconds
+    --                 extra_request_body = {
+    --                     temperature = 0.75,
+    --                     max_tokens = 32768,
+    --                 },
+    --             },
+    --             gemini = { 
+    --                 endpoint = "https://generativelanguage.googleapis.com/v1beta/models", 
+    --                 --model = "gemma-3-27b-it", 
+    --                 --model = "gemini-3-flash-preview", 
+    --                 --model = "gemini-2.5-pro", 
+    --                 model = "gemini-3-pro-preview", 
+    --                 timeout = 30000, -- Timeout in milliseconds 
+    --                 temperature = 0, 
+    --                 max_tokens = 8192, 
+    --             },
+    --         },
+    --     },
+    --     dependencies = {
+    --         "nvim-lua/plenary.nvim",
+    --         "MunifTanjim/nui.nvim",
+    --         --- The below dependencies are optional,
+    --         "nvim-mini/mini.pick", -- for file_selector provider mini.pick
+    --         "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+    --         "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+    --         "ibhagwan/fzf-lua", -- for file_selector provider fzf
+    --         "stevearc/dressing.nvim", -- for input provider dressing
+    --         "folke/snacks.nvim", -- for input provider snacks
+    --         "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+    --         "zbirenbaum/copilot.lua", -- for providers='copilot'
+    --         {
+    --             -- support for image pasting
+    --             "HakonHarnes/img-clip.nvim",
+    --             event = "VeryLazy",
+    --             opts = {
+    --                 -- recommended settings
+    --                 default = {
+    --                     embed_image_as_base64 = false,
+    --                     prompt_for_file_name = false,
+    --                     drag_and_drop = {
+    --                         insert_mode = true,
+    --                     },
+    --                     -- required for Windows users
+    --                     use_absolute_path = true,
+    --                 },
+    --             },
+    --         },
+    --         {
+    --             -- Make sure to set this up properly if you have lazy=true
+    --             'MeanderingProgrammer/render-markdown.nvim',
+    --             opts = {
+    --                 file_types = { "markdown", "Avante" },
+    --             },
+    --             ft = { "markdown", "Avante" },
+    --         },
+    --     },
+    -- },
+
     {
-        "yetone/avante.nvim",
-        -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-        -- ⚠️ must add this setting! ! !
-        build = vim.fn.has("win32") ~= 0
-        and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-        or "make",
-        event = "VeryLazy",
-        version = false, -- Never set this value to "*"! Never!
-        ---@module 'avante'
-        ---@type avante.Config
-        opts = {
-            -- add any opts here
-            -- this file can contain specific instructions for your project
-            instructions_file = "avante.md",
-            -- for example
-            provider = "gemini",
-            providers = {
-                claude = {
-                    endpoint = "https://api.anthropic.com",
-                    model = "claude-sonnet-4-20250514",
-                    timeout = 30000, -- Timeout in milliseconds
-                    extra_request_body = {
-                        temperature = 0.75,
-                        max_tokens = 20480,
-                    },
-                },
-                moonshot = {
-                    endpoint = "https://api.moonshot.ai/v1",
-                    model = "kimi-k2-0711-preview",
-                    timeout = 30000, -- Timeout in milliseconds
-                    extra_request_body = {
-                        temperature = 0.75,
-                        max_tokens = 32768,
-                    },
-                },
-                gemini = { 
-                    endpoint = "https://generativelanguage.googleapis.com/v1beta/models", 
-                    --model = "gemma-3-27b-it", 
-                    --model = "gemini-3-flash-preview", 
-                    model = "gemini-2.5-pro", 
-                    timeout = 30000, -- Timeout in milliseconds 
-                    temperature = 0, 
-                    max_tokens = 8192, 
-                },
-            },
-        },
+        "nickjvandyke/opencode.nvim",
         dependencies = {
-            "nvim-lua/plenary.nvim",
-            "MunifTanjim/nui.nvim",
-            --- The below dependencies are optional,
-            "nvim-mini/mini.pick", -- for file_selector provider mini.pick
-            "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-            "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-            "ibhagwan/fzf-lua", -- for file_selector provider fzf
-            "stevearc/dressing.nvim", -- for input provider dressing
-            "folke/snacks.nvim", -- for input provider snacks
-            "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-            "zbirenbaum/copilot.lua", -- for providers='copilot'
-            {
-                -- support for image pasting
-                "HakonHarnes/img-clip.nvim",
-                event = "VeryLazy",
-                opts = {
-                    -- recommended settings
-                    default = {
-                        embed_image_as_base64 = false,
-                        prompt_for_file_name = false,
-                        drag_and_drop = {
-                            insert_mode = true,
-                        },
-                        -- required for Windows users
-                        use_absolute_path = true,
-                    },
-                },
-            },
-            {
-                -- Make sure to set this up properly if you have lazy=true
-                'MeanderingProgrammer/render-markdown.nvim',
-                opts = {
-                    file_types = { "markdown", "Avante" },
-                },
-                ft = { "markdown", "Avante" },
-            },
+            -- Recommended for `ask()` and `select()`.
+            -- Required for `snacks` provider.
+            ---@module 'snacks' <- Loads `snacks.nvim` types for configuration intellisense.
+            { "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
         },
+        config = function()
+            ---@type opencode.Opts
+            vim.g.opencode_opts = {
+                -- Your configuration, if any. Goto definition on the type or field for details.
+            }
+
+            -- Required for `opts.events.reload`.
+            vim.o.autoread = true
+
+            -- Recommended/example keymaps.
+            vim.keymap.set({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode…" })
+            vim.keymap.set({ "n", "x" }, "<C-x>", function() require("opencode").select() end,                          { desc = "Execute opencode action…" })
+            vim.keymap.set({ "n", "t" }, "<leader>at", function() require("opencode").toggle() end,                          { desc = "Toggle opencode" })
+
+            vim.keymap.set({ "n", "x" }, "go",  function() return require("opencode").operator("@this ") end,        { desc = "Add range to opencode", expr = true })
+            vim.keymap.set("n",          "goo", function() return require("opencode").operator("@this ") .. "_" end, { desc = "Add line to opencode", expr = true })
+
+            vim.keymap.set("n", "<S-C-u>", function() require("opencode").command("session.half.page.up") end,   { desc = "Scroll opencode up" })
+            vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
+
+            -- You may want these if you use the opinionated `<C-a>` and `<C-x>` keymaps above — otherwise consider `<leader>o…` (and remove terminal mode from the `toggle` keymap).
+            vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
+            vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
+        end,
     }
 
 
