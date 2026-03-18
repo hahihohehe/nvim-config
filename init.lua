@@ -62,8 +62,22 @@ require("lazy").setup({
 		    filtered_items = { hide_dotfiles = false, hide_gitignored = false },
 		    use_libuv_file_watcher = true,
             bind_to_cwd = true,
+            window = {
+                mappings = {
+                    ["<C-a>"] = function(state)
+                        local node = state.tree:get_node()
+                        if node then
+                            local path = node:get_id()
+                            require("opencode").ask("@file:" .. path .. ": ", { submit = true })
+                        end
+                    end,
+                    ["<C-x>"] = function(state)
+                        require("opencode").select()
+                    end,
+                },
+            },
         },
-	    })
+	})
     end,
   },
 
